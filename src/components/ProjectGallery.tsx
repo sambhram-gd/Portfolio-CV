@@ -160,13 +160,13 @@ export const ProjectGallery: React.FC<ProjectGalleryProps> = ({ onProjectClick }
                       </div>
 
                       {/* Expanding Image Container */}
-                      <div className="grid grid-rows-[0fr] opacity-0 group-hover:grid-rows-[1fr] group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:mt-2">
+                      <div className="grid grid-rows-[1fr] opacity-100 mt-2 md:grid-rows-[0fr] md:opacity-0 md:group-hover:grid-rows-[1fr] md:group-hover:opacity-100 md:transition-all md:duration-700 md:ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:mt-2">
                         <div className="overflow-hidden min-h-0">
-                          <div className="rounded aspect-[16/9] w-full relative border border-cyan-500/10 overflow-hidden mt-3">
+                          <div className="rounded aspect-[16/9] w-full relative border border-cyan-500/10 overflow-hidden mt-1 md:mt-3">
                             <img 
                               src={project.image} 
                               alt={project.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out grayscale-[0.5] group-hover:grayscale-0"
+                              className="w-full h-full object-cover md:grayscale-[0.5] md:group-hover:grayscale-0 md:group-hover:scale-105 transition-all duration-1000 ease-out"
                             />
                             {/* Scanning HUD overlay on image */}
                             <div className="absolute inset-0 bg-gradient-to-t from-cyan-950/30 to-transparent pointer-events-none" />

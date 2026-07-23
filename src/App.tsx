@@ -22,9 +22,15 @@ import type { Project }    from './data';
 function App() {
   const [loading, setLoading]               = useState(true);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isMobile, setIsMobile]             = useState(false);
 
-  /* Lenis smooth scroll */
+  /* Detect mobile and initialize Lenis only on desktop */
   useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 768px)").matches;
+    setIsMobile(mobile);
+
+    if (mobile) return;
+
     const lenis = new Lenis({
       duration:          1.2,
       easing:            (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -74,7 +80,7 @@ function App() {
 
       {/* Fixed Background Layers */}
       <BackgroundBrandText text="SAMBHRAM" opacity={0.03} />
-      <WebGLFluid />
+      {!isMobile && <WebGLFluid />}
       <GlassOverlay />
 
       {/* Scrollable page content */}

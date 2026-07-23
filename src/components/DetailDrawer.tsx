@@ -83,7 +83,7 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({ project, onClose }) 
 
         <button
           onClick={onClose}
-          className="fixed top-8 right-8 md:top-16 md:right-16 z-30 p-3 bg-white/10 hover:bg-emerald-500 text-white rounded-full backdrop-blur-md transition-all duration-300 group shadow-xl"
+          className="absolute top-4 right-4 md:fixed md:top-16 md:right-16 z-30 p-3 bg-white/10 hover:bg-emerald-500 text-white rounded-full backdrop-blur-md transition-all duration-300 group shadow-xl"
         >
           <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
         </button>

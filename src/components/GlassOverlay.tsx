@@ -5,6 +5,9 @@ export const GlassOverlay: React.FC = () => {
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       setCoordinates({ x: e.clientX, y: e.clientY });
     };
