@@ -302,7 +302,7 @@ export const LiquidText: React.FC<LiquidTextProps> = ({ lines, className, lineCl
             {line.split('').map((char, charIndex) => (
               <span
                 key={`${lineIndex}-${charIndex}`}
-                ref={el => spanRefs.current[`${lineIndex}-${charIndex}`] = el}
+                ref={el => { spanRefs.current[`${lineIndex}-${charIndex}`] = el; }}
                 className="inline-block opacity-0"
               >
                 {char === ' ' ? '\u00A0' : char}

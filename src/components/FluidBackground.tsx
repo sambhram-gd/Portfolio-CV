@@ -219,7 +219,8 @@ export const FluidBackground: React.FC = () => {
             }
 
             // Mouse splat
-            if (velocity.current.length() > 0.0001) {
+            const lenSq = velocity.current.x * velocity.current.x + velocity.current.y * velocity.current.y;
+            if (lenSq > 0.0000001) {
                 splatProgram.uniforms.uPoint.value.copy(mouse.current);
                 splatProgram.uniforms.uColor.value.set(velocity.current.x * 500, velocity.current.y * 500, 0);
                 splatProgram.uniforms.uRadius.value = 0.005;
@@ -234,7 +235,8 @@ export const FluidBackground: React.FC = () => {
                 renderer.render({ scene: mesh, target: density.write });
                 density.swap();
                 
-                velocity.current.multiply(0.9);
+                velocity.current.x *= 0.9;
+                velocity.current.y *= 0.9;
             }
 
             // Display

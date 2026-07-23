@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marquee Hero Section</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+
+    /* Hero Section Container */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #0a0a0a;
+      display: flex;
+    }
+
+    /* Pause animation on hover of the entire hero section */
+    .hero:hover .marquee-track {
+      animation-play-state: paused;
+    }
+
+    /* Marquee Layout */
+    .marquee-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      gap: 10px; /* Small gap between rows */
+      padding: 10px 0;
+      position: absolute;
+      inset: 0;
+    }
+
+    .marquee-row {
+      flex: 1; /* Each row takes ~25% of height */
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      will-change: transform;
+    }
+
+    .marquee-set {
+      display: flex;
+      gap: 10px; /* Gap between images */
+      padding-right: 10px; /* Mimic the gap to ensure seamless alignment with the cloned set */
+      height: 100%;
+    }
+
+    .marquee-set img {
+      /* Fluid height bound by row height minus padding */
+      height: calc(25vh - 20px); 
+      width: 320px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Animations */
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes scroll-right {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Assign Animations and Varying Speeds */
+    .marquee-left .marquee-track {
+      animation: scroll-left var(--duration, 40s) linear infinite;
+    }
+
+    .marquee-right .marquee-track {
+      animation: scroll-right var(--duration, 40s) linear infinite;
+    }
+
+    /* Overlay Scrim */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      /* Gradient from dark at top to fully dark at bottom for depth and text legibility */
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.75) 100%
+      );
+      z-index: 1;
+      pointer-events: none; /* Let pointer events pass through so hovering the hero triggers the pause */
+    }
+
+    /* Foreground Content */
+    .content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 24px;
+      pointer-events: none;
+    }
+
+    .content > * {
+      pointer-events: auto; /* Re-enable interaction for text and button */
+    }
+
+    .content h1 {
+      font-size: 4.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .content p {
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      line-height: 1.6;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .cta-button {
+      padding: 16px 36px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #000;
+      background-color: #fff;
+      border: none;
+      border-radius: 9999px; /* Pill shape */
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px) scale(1.02);
+      background-color: #f0f0f0;
+      box-shadow: 0 15px 40px rgba(255,255,255,0.2);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .marquee-set img {
+        width: 240px;
+      }
+      .content h1 {
+        font-size: 2.75rem;
+      }
+      .content p {
+        font-size: 1.1rem;
+      }
+      /* Slow down slightly on mobile */
+      .marquee-left .marquee-track,
+      .marquee-right .marquee-track {
+        animation-duration: calc(var(--duration, 40s) * 1.5);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    
+    <!-- Background Marquee Container -->
+    <div class="marquee-container">
+      
+      <!-- Row 1: Scrolls Left -->
+      <div class="marquee-row marquee-left" style="--duration: 45s;">
+        <div class="marquee-track">
+          <!-- Original Set -->
+          <div class="marquee-set">
+            <img src="https://picsum.photos/seed/r1i1/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i2/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i3/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i4/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i5/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i6/600/400" alt="Gallery image">
+          </div>
+          <!-- Cloned Set for Seamless Loop -->
+          <div class="marquee-set">
+            <img src="https://picsum.photos/seed/r1i1/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i2/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i3/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i4/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i5/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r1i6/600/400" alt="Gallery image">
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Scrolls Right -->
+      <div class="marquee-row marquee-right" style="--duration: 55s;">
+        <div class="marquee-track">
+          <!-- Original Set -->
+          <div class="marquee-set">
+            <img src="https://picsum.photos/seed/r2i1/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i2/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i3/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i4/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i5/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i6/600/400" alt="Gallery image">
+          </div>
+          <!-- Cloned Set for Seamless Loop -->
+          <div class="marquee-set">
+            <img src="https://picsum.photos/seed/r2i1/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i2/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i3/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i4/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i5/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r2i6/600/400" alt="Gallery image">
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Scrolls Left -->
+      <div class="marquee-row marquee-left" style="--duration: 40s;">
+        <div class="marquee-track">
+          <!-- Original Set -->
+          <div class="marquee-set">
+            <img src="https://picsum.photos/seed/r3i1/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i2/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i3/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i4/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i5/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i6/600/400" alt="Gallery image">
+          </div>
+          <!-- Cloned Set for Seamless Loop -->
+          <div class="marquee-set">
+            <img src="https://picsum.photos/seed/r3i1/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i2/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i3/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i4/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i5/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r3i6/600/400" alt="Gallery image">
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4: Scrolls Right -->
+      <div class="marquee-row marquee-right" style="--duration: 60s;">
+        <div class="marquee-track">
+          <!-- Original Set -->
+          <div class="marquee-set">
+            <img src="https://picsum.photos/seed/r4i1/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i2/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i3/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i4/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i5/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i6/600/400" alt="Gallery image">
+          </div>
+          <!-- Cloned Set for Seamless Loop -->
+          <div class="marquee-set">
+            <img src="https://picsum.photos/seed/r4i1/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i2/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i3/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i4/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i5/600/400" alt="Gallery image">
+            <img src="https://picsum.photos/seed/r4i6/600/400" alt="Gallery image">
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Semi-transparent Scrim/Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Centered Foreground Content -->
+    <div class="content">
+      <h1>Infinite Gallery</h1>
+      <p>Experience a continuous, immersive visual journey. A cinematic multi-row marquee designed to showcase your absolute best work.</p>
+      <button class="cta-button">Explore Projects</button>
+    </div>
+
+  </section>
+
+</body>
+</html>

@@ -6,28 +6,27 @@ gsap.registerPlugin(ScrollTrigger);
 
 const CHAPTERS = [
   {
-    tag: 'Chapter I',
-    headline: 'Engineering\nIntelligence.',
-    copy: 'Building systems that see, understand, and decide. From NVIDIA Jetson to production ML pipelines — turning raw data into real-time insight.',
+    tag: 'LOG_ENTRY_001',
+    headline: 'TEACHING\nMACHINES TO SEE.',
+    copy: 'From thermal imaging pipelines at Sandoz to pixel-level anomaly detection with PatchCore — achieving Image-level AUROC ≈ 1.00 on real manufacturing datasets.',
   },
   {
-    tag: 'Chapter II',
-    headline: 'Every Frame,\nAnalyzed.',
-    copy: 'Real-time GMSL link quality analysis. Monocular depth estimation. Anomaly detection at pixel-level precision. Quality that machines can measure.',
+    tag: 'LOG_ENTRY_002',
+    headline: 'EDGE TO\nINTELLIGENCE.',
+    copy: 'Real-time GMSL link quality analysis on NVIDIA Jetson. Monocular road scene 2D mapping. GAN-based video super resolution at 0.82M params with PSNR 25.65 dB.',
   },
   {
-    tag: 'Chapter III',
-    headline: 'Building\nWhat\'s Next.',
-    copy: 'From embedded hardware to cloud inference — engineering the future of intelligent systems. Let\'s build something extraordinary.',
+    tag: 'LOG_ENTRY_003',
+    headline: 'PUBLISHED,\nDEPLOYED, PROVEN.',
+    copy: 'YOLOv8 & RetinaNet on 4,000+ annotated images — presented at IMCL 2025, Bengaluru. From data to deployment: engineering solutions that hold up in the real world.',
   },
 ];
 
 export const CartierChapters: React.FC = () => {
-  const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
-    // Reveal each chapter as it enters the viewport
-    containerRefs.current.forEach((el, index) => {
+    containerRefs.current.forEach((el) => {
       if (!el) return;
       
       gsap.fromTo(el.querySelector('.chapter-content'), 
@@ -51,7 +50,10 @@ export const CartierChapters: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative z-10 w-full flex flex-col gap-32 py-20">
+    <div className="relative z-10 w-full flex flex-col gap-32 py-20 bg-[#03060f] border-b border-cyan-500/10">
+      {/* Decorative vertical connection line */}
+      <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-cyan-500/10 to-transparent -translate-x-1/2 hidden md:block" />
+
       {CHAPTERS.map((chapter, i) => (
         <section 
           key={i} 
@@ -59,58 +61,32 @@ export const CartierChapters: React.FC = () => {
           className="w-full flex items-center justify-center pointer-events-none"
         >
           <div 
-            className="chapter-content text-center px-6" 
+            className="chapter-content text-center px-6 relative z-10" 
             style={{ maxWidth: '800px', pointerEvents: 'auto' }}
           >
+            {/* Tag / Header code style */}
             <div
-              style={{
-                fontFamily: '"Inter", sans-serif',
-                fontSize: '0.65rem',
-                fontWeight: 400,
-                letterSpacing: '0.3em',
-                color: 'rgba(255,255,255,0.5)',
-                textTransform: 'uppercase',
-                marginBottom: '2.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '16px'
-              }}
+              className="font-mono text-[10px] tracking-[0.4em] text-cyan-400 uppercase mb-8 flex items-center justify-center gap-4"
             >
-              <span style={{ width: '24px', height: '1px', background: 'rgba(255,255,255,0.3)' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
               {chapter.tag}
-              <span style={{ width: '24px', height: '1px', background: 'rgba(255,255,255,0.3)' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
             </div>
             
+            {/* Headline */}
             <h2
+              className="font-mono text-4xl md:text-6xl font-bold leading-none text-white margin-0 mb-8 tracking-tighter"
               style={{
-                fontFamily: '"Cormorant Garamond", serif',
-                fontSize: 'clamp(3rem, 6vw, 5.5rem)',
-                fontWeight: 400,
-                fontStyle: 'italic',
-                lineHeight: 1.05,
-                color: '#fff',
-                margin: '0 0 2rem 0',
-                textShadow: '0 4px 32px rgba(0,0,0,0.6)',
-                letterSpacing: '-0.01em',
                 whiteSpace: 'pre-line',
+                textShadow: '0 0 30px rgba(0, 240, 255, 0.2)'
               }}
             >
               {chapter.headline}
             </h2>
             
+            {/* Copy paragraph */}
             <p
-              style={{
-                fontFamily: '"Inter", sans-serif',
-                fontSize: 'clamp(0.85rem, 1.2vw, 1rem)',
-                fontWeight: 300,
-                lineHeight: 2.0,
-                color: 'rgba(255,255,255,0.85)',
-                maxWidth: 480,
-                margin: '0 auto',
-                letterSpacing: '0.02em',
-                textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-              }}
+              className="font-mono text-sm leading-relaxed text-cyan-200/70 max-w-xl mx-auto"
             >
               {chapter.copy}
             </p>

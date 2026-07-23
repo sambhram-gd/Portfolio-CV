@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Splide Marquee Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Splide CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #000;
+      overflow-x: hidden;
+    }
+
+    .hero-section {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Dark overlay over the moving images */
+    .hero-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Foreground Content */
+    .foreground-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      color: #ffffff;
+      text-align: center;
+      width: 100%;
+      padding: 0 20px;
+    }
+
+    .foreground-content h1 {
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
+    }
+
+    .foreground-content p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+    }
+
+    /* Splide Container */
+    .splide-container {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      /* distribute 4 rows evenly */
+    }
+
+    .splide {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .splide__track {
+      width: 100%;
+    }
+
+    /* No padding to hide track chrome */
+    .splide__list {
+      display: flex;
+    }
+
+    /* Splide images */
+    .splide__slide img {
+      height: 220px;
+      width: auto;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero-section">
+    <!-- Foreground Text -->
+    <div class="foreground-content">
+      <h1>Infinite Splide Gallery</h1>
+      <p>Built with Splide.js & AutoScroll Extension</p>
+    </div>
+
+    <!-- Splide Rows Background -->
+    <div class="splide-container">
+      
+      <!-- Row 1 (Right to Left) -->
+      <div class="splide splide-row-1">
+        <div class="splide__track">
+          <ul class="splide__list">
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s1/400/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s2/300/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s3/500/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s4/350/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s5/450/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s6/400/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s7/320/220" alt="Img"></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Row 2 (Left to Right) -->
+      <div class="splide splide-row-2">
+        <div class="splide__track">
+          <ul class="splide__list">
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s8/400/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s9/350/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s10/450/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s11/300/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s12/500/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s13/420/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s14/360/220" alt="Img"></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Row 3 (Right to Left) -->
+      <div class="splide splide-row-3">
+        <div class="splide__track">
+          <ul class="splide__list">
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s15/450/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s16/300/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s17/400/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s18/500/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s19/350/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s20/480/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s21/330/220" alt="Img"></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Row 4 (Left to Right) -->
+      <div class="splide splide-row-4">
+        <div class="splide__track">
+          <ul class="splide__list">
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s22/350/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s23/450/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s24/300/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s25/400/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s26/500/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s27/380/220" alt="Img"></li>
+            <li class="splide__slide"><img src="https://picsum.photos/seed/s28/420/220" alt="Img"></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Splide Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide-extension-auto-scroll@0.5.3/dist/js/splide-extension-auto-scroll.min.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Base config shared by all carousels
+      const commonConfig = {
+        type: 'loop',
+        drag: 'free',
+        arrows: false,
+        pagination: false,
+        perMove: 1,
+        autoWidth: true,
+        gap: '1rem',
+      };
+
+      // Ensure the extension is loaded globally
+      const extensions = window.splide ? window.splide.Extensions : {};
+
+      // Row 1
+      new Splide('.splide-row-1', {
+        ...commonConfig,
+        autoScroll: { speed: 1, pauseOnHover: false, pauseOnFocus: false }
+      }).mount(extensions);
+
+      // Row 2 (Reverse direction)
+      new Splide('.splide-row-2', {
+        ...commonConfig,
+        autoScroll: { speed: -1, pauseOnHover: false, pauseOnFocus: false }
+      }).mount(extensions);
+
+      // Row 3
+      new Splide('.splide-row-3', {
+        ...commonConfig,
+        autoScroll: { speed: 1.5, pauseOnHover: false, pauseOnFocus: false }
+      }).mount(extensions);
+
+      // Row 4 (Reverse direction)
+      new Splide('.splide-row-4', {
+        ...commonConfig,
+        autoScroll: { speed: -1.2, pauseOnHover: false, pauseOnFocus: false }
+      }).mount(extensions);
+    });
+  </script>
+</body>
+</html>

@@ -10,7 +10,7 @@ interface Props {
 export const MenuPixelText: React.FC<Props> = ({ 
   text, 
   className = "", 
-  activeColor = "rgb(52, 211, 153)" // Tailwind emerald-400 / our accent
+  activeColor = "rgb(0, 240, 255)" // Cyber cyan
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -68,50 +68,44 @@ export const MenuPixelText: React.FC<Props> = ({
       uniform vec2 u_resolution;
       uniform vec2 u_mouse;
       uniform float u_hover;
-      uniform float u_velocity;
+      uniform float u_time;
       uniform sampler2D u_texture;
       uniform vec3 u_activeColor;
       varying vec2 v_texcoord;
       
-      float rand(vec2 n) { 
-        return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
-      }
-
       void main() {
         vec2 p = v_texcoord;
         vec2 pixelCoords = p * u_resolution;
         vec2 mouseCoords = vec2(u_mouse.x, u_mouse.y) * u_resolution;
         
         float dist = distance(pixelCoords, mouseCoords);
-        float radius = 100.0;
+        float radius = 180.0;
         
-        float maxPixelSize = mix(2.0, 6.0, u_velocity); 
-        vec2 grid = u_resolution / maxPixelSize;
-        
-        float noise = (rand(floor(p * grid)) - 0.5) * 0.15;
-        vec2 p_pixel = floor(p * grid) / grid + 0.5 / grid;
-        p_pixel += noise / grid; 
-        
-        vec4 colorCrisp = texture2D(u_texture, p);
-        vec4 colorPixel = texture2D(u_texture, p_pixel);
-        
-        float falloff = 0.0;
-        float glowIntensity = 0.0;
-        
+        // Watery gel stretching distortion
         if (dist < radius) {
-            float normalizedDist = smoothstep(radius, 0.0, dist);
-            falloff = pow(normalizedDist, 1.5); 
-            glowIntensity = pow(normalizedDist, 2.0); 
+          float force = (radius - dist) / radius; // 0 to 1
+          float strength = pow(force, 2.2) * 0.14 * u_hover;
+          
+          // Wave dynamics
+          float wave = sin(dist * 0.08 - u_time * 6.0) * 0.02 * force * u_hover;
+          
+          vec2 dir = normalize(pixelCoords - mouseCoords);
+          // Apply push/stretch displacement
+          p -= dir * (strength + wave);
         }
         
-        falloff *= u_hover;
-        glowIntensity *= u_hover;
+        // Keep bounds check to avoid coordinate bleeding
+        if (p.x < 0.0 || p.x > 1.0 || p.y < 0.0 || p.y > 1.0) {
+          discard;
+        }
+
+        vec4 colorCrisp = texture2D(u_texture, p);
         
-        vec4 finalColor = mix(colorCrisp, colorPixel, falloff);
-        
+        // Glow effect
+        vec4 finalColor = colorCrisp;
         if (finalColor.a > 0.0) {
-            finalColor.rgb *= mix(1.0, 1.3, falloff);
-            finalColor.rgb = mix(finalColor.rgb, u_activeColor, glowIntensity * 0.5);
+          float glow = smoothstep(radius, 0.0, dist) * u_hover;
+          finalColor.rgb = mix(finalColor.rgb, u_activeColor, glow * 0.75);
         }
         
         gl_FragColor = finalColor;
@@ -161,10 +155,10 @@ export const MenuPixelText: React.FC<Props> = ({
     const uResolution = gl.getUniformLocation(program, "u_resolution");
     const uMouse = gl.getUniformLocation(program, "u_mouse");
     const uHover = gl.getUniformLocation(program, "u_hover");
-    const uVelocity = gl.getUniformLocation(program, "u_velocity");
+    const uTime = gl.getUniformLocation(program, "u_time");
     const uColor = gl.getUniformLocation(program, "u_activeColor");
 
-    const uniforms = { mouse: { x: 0.5, y: 0.5 }, hover: 0.0, velocity: 0.0 };
+    const uniforms = { mouse: { x: 0.5, y: 0.5 }, hover: 0.0, time: 0.0 };
 
     const resize = () => {
       if (!containerRef.current) return;
@@ -172,7 +166,7 @@ export const MenuPixelText: React.FC<Props> = ({
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uResolution, canvas.width, canvas.height);
       
-      const rgb = activeColor.match(/\d+/g)?.map(Number) || [52, 211, 153];
+      const rgb = activeColor.match(/\d+/g)?.map(Number) || [0, 240, 255];
       gl.uniform3f(uColor, rgb[0]/255, rgb[1]/255, rgb[2]/255);
       
       gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -183,19 +177,17 @@ export const MenuPixelText: React.FC<Props> = ({
     document.fonts.ready.then(resize);
 
     let frameId: number;
+    let startTime = Date.now();
     const render = () => {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform2f(uMouse, uniforms.mouse.x, uniforms.mouse.y);
       gl.uniform1f(uHover, uniforms.hover);
-      gl.uniform1f(uVelocity, uniforms.velocity);
+      gl.uniform1f(uTime, (Date.now() - startTime) / 1000.0);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       frameId = requestAnimationFrame(render);
     };
     render();
-
-    const xTo = gsap.quickTo(uniforms, "mouse", { attr: "x", duration: 0.25, ease: "power3.out" });
-    const yTo = gsap.quickTo(uniforms, "mouse", { attr: "y", duration: 0.25, ease: "power3.out" });
 
     const onMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -203,16 +195,9 @@ export const MenuPixelText: React.FC<Props> = ({
       const y = (e.clientY - rect.top) / rect.height;
       uniforms.mouse.x = x;
       uniforms.mouse.y = y;
-      
-      const speed = Math.min(Math.sqrt(e.movementX ** 2 + e.movementY ** 2) / 60.0, 1.0);
-      gsap.to(uniforms, { 
-        velocity: speed, 
-        duration: 0.1, 
-        onComplete: () => { gsap.to(uniforms, { velocity: 0.0, duration: 0.4 }); }
-      });
     };
 
-    const onMouseEnter = () => { gsap.to(uniforms, { hover: 1.0, duration: 0.3 }); };
+    const onMouseEnter = () => { gsap.to(uniforms, { hover: 1.0, duration: 0.4 }); };
     const onMouseLeave = () => { gsap.to(uniforms, { hover: 0.0, duration: 0.6 }); };
 
     const parent = containerRef.current;

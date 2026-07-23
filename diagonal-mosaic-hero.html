@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sambhram Doddamane | Robotics & AI Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #060814; color: #fff; overflow-x: hidden; user-select: none; }
+
+    /* Minimal Dark Ticker Strip */
+    .ticker-strip {
+      position: relative;
+      z-index: 20;
+      background: #0a0815;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: scroll-left 25s linear infinite;
+    }
+
+    .ticker-set {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding-right: 32px;
+    }
+
+    .ticker-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ticker-item img {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: 0.8;
+    }
+
+    .ticker-sep {
+      color: #6B3FE4;
+      font-weight: bold;
+      opacity: 0.6;
+    }
+
+    /* Scroll Container to trigger Scroll progress */
+    .scroll-container {
+      position: relative;
+      width: 100%;
+      height: 180vh;
+      background-color: #060814;
+    }
+
+    /* Sticky Hero Wrapper (Flush to Ticker) */
+    .hero {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+    }
+
+    .hero:active {
+      cursor: grabbing;
+    }
+
+    /* 3D Sphere Perspective Container */
+    .sphere-wrapper {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Radial purple glow background */
+    .sphere-glow {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(107, 63, 228, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      border-radius: 50%;
+    }
+
+    /* 3D Rotatable Node */
+    .sphere-container {
+      position: relative;
+      width: 0;
+      height: 0;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    /* Individual Image Cards on the surface */
+    .sphere-card {
+      position: absolute;
+      width: 160px;
+      height: 110px;
+      left: -80px;
+      top: -55px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .sphere-card:hover {
+      border-color: #6B3FE4;
+      transform: scale(1.1);
+    }
+
+    .sphere-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .sphere-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 8, 25, 0.25);
+      transition: background 0.3s;
+    }
+
+    .sphere-card:hover .sphere-card-overlay {
+      background: transparent;
+    }
+
+    /* Animations */
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Overlay */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 8, 25, 0.65);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Foreground Content */
+    .content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 24px;
+      color: #fff;
+      pointer-events: none;
+    }
+
+    .content > * {
+      pointer-events: auto;
+    }
+
+    .content h1 {
+      font-size: clamp(3rem, 6vw, 4.75rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      max-width: 950px;
+    }
+
+    .content p {
+      font-size: 1.125rem;
+      max-width: 600px;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      line-height: 1.6;
+      font-weight: 400;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* CTA Button area */
+    .cta-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cta-btn {
+      background-color: #6B3FE4;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.125rem;
+      padding: 18px 40px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(107, 63, 228, 0.4);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cta-btn:hover {
+      background-color: #5932c3;
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(107, 63, 228, 0.5);
+    }
+
+    /* Circular arrow button */
+    .cta-arrow {
+      width: 56px;
+      height: 56px;
+      background-color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+    }
+    
+    .cta-arrow:hover {
+      transform: translateY(-2px) rotate(15deg);
+    }
+
+    .cta-arrow svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: #0a0819;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Minimal Dark Ticker Strip -->
+  <div class="ticker-strip">
+    <div class="ticker-track">
+      <!-- Set 1 -->
+      <div class="ticker-set">
+        <div class="ticker-item"><img src="https://cdn.simpleicons.org/opencv" alt="OpenCV"> OpenCV</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item"><img src="https://cdn.simpleicons.org/tensorflow" alt="TensorFlow"> TensorFlow</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item"><img src="https://cdn.simpleicons.org/pytorch" alt="PyTorch"> PyTorch</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item"><img src="https://cdn.simpleicons.org/nvidia" alt="NVIDIA"> NVIDIA</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item">Quanser</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item">Machine Learning</div>
+        <span class="ticker-sep">·</span>
+      </div>
+      <!-- Set 2 (Duplicated for Loop) -->
+      <div class="ticker-set">
+        <div class="ticker-item"><img src="https://cdn.simpleicons.org/opencv" alt="OpenCV"> OpenCV</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item"><img src="https://cdn.simpleicons.org/tensorflow" alt="TensorFlow"> TensorFlow</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item"><img src="https://cdn.simpleicons.org/pytorch" alt="PyTorch"> PyTorch</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item"><img src="https://cdn.simpleicons.org/nvidia" alt="NVIDIA"> NVIDIA</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item">Quanser</div>
+        <span class="ticker-sep">·</span>
+        <div class="ticker-item">Machine Learning</div>
+        <span class="ticker-sep">·</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Container for Pinned Animation -->
+  <div class="scroll-container" id="scroll-wrapper">
+    <!-- Flush Interactive Sphere Hero Section -->
+    <section class="hero" id="hero-space">
+      
+      <!-- 3D Perspective Wrapper -->
+      <div class="sphere-wrapper">
+        <div class="sphere-glow"></div>
+        
+        <!-- 3D Globe Container -->
+        <div class="sphere-container" id="globe">
+          <!-- Rendered dynamically via JavaScript to calculate 3D Sphere geometry -->
+        </div>
+      </div>
+
+      <!-- Dark Overlay -->
+      <div class="overlay"></div>
+
+      <!-- Foreground Content -->
+      <div class="content">
+        <h1>INTELLIGENT SYSTEMS<br>& ROBOTICS ENGINEER</h1>
+        <p>Merging machine learning, high-performance control systems, and rich interactive interfaces. Engineering state-of-the-art solutions at the intersection of AI, hardware, and digital design.</p>
+        
+        <div class="cta-container">
+          <a href="#projects" class="cta-btn">Explore Projects</a>
+          <a href="#contact" class="cta-arrow">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 17L17 7M17 7H7M17 7V17" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const globe = document.getElementById('globe');
+      const scrollWrapper = document.getElementById('scroll-wrapper');
+      
+      // Sphere settings
+      const N = 85;
+      const radius = 360;
+      let cardsHtml = '';
+
+      // Generate points on sphere using Fibonacci distribution
+      for (let i = 0; i < N; i++) {
+        const k = i + 0.5;
+        const phi = Math.acos(1 - 2 * k / N);
+        const theta = Math.PI * (1 + Math.sqrt(5)) * k;
+
+        const x = radius * Math.sin(phi) * Math.cos(theta);
+        const y = radius * Math.sin(phi) * Math.sin(theta);
+        const z = radius * Math.cos(phi);
+
+        // Compute normal angles so cards face outward
+        const rotateY = Math.atan2(x, z) * (180 / Math.PI);
+        const rotateX = -Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI);
+
+        const seed = (i % 25) + 1;
+
+        cardsHtml += `
+          <div class="sphere-card" style="transform: translate3d(${x}px, ${y}px, ${z}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg);">
+            <img src="https://picsum.photos/seed/portfolio-doc-${seed}/300/200" alt="Sphere Item ${i}">
+            <div class="sphere-card-overlay"></div>
+          </div>
+        `;
+      }
+      globe.innerHTML = cardsHtml;
+
+      // Interaction & Inertia Rotations & Scroll Zoom
+      let isDragging = false;
+      const currentRotation = { x: -10, y: 0 };
+      const targetRotation = { x: -10, y: 0 };
+      const previousMouse = { x: 0, y: 0 };
+      const autoRotateSpeed = 0.08;
+
+      let currentScale = 0.45;
+      let targetScale = 0.45;
+
+      const handleScroll = () => {
+        const rect = scrollWrapper.getBoundingClientRect();
+        const scrollableHeight = rect.height - window.innerHeight;
+        if (scrollableHeight <= 0) return;
+
+        const progress = Math.max(0, Math.min(1, -rect.top / scrollableHeight));
+        
+        // Scale values
+        const minScale = 0.45;
+        const maxScale = 1.85;
+        targetScale = minScale + (maxScale - minScale) * progress;
+      };
+
+      const handleStart = (clientX, clientY) => {
+        isDragging = true;
+        previousMouse.x = clientX;
+        previousMouse.y = clientY;
+      };
+
+      const handleMove = (clientX, clientY) => {
+        if (!isDragging) return;
+        const deltaX = clientX - previousMouse.x;
+        const deltaY = clientY - previousMouse.y;
+
+        targetRotation.y += deltaX * 0.15;
+        targetRotation.x -= deltaY * 0.15;
+
+        // Constraint X axis to prevent flipping
+        targetRotation.x = Math.max(-60, Math.min(60, targetRotation.x));
+
+        previousMouse.x = clientX;
+        previousMouse.y = clientY;
+      };
+
+      const handleEnd = () => {
+        isDragging = false;
+      };
+
+      // Scroll Event
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+
+      // Mouse Listeners
+      const hero = document.getElementById('hero-space');
+      hero.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY));
+      window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+      window.addEventListener('mouseup', handleEnd);
+
+      // Touch Listeners
+      hero.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) handleStart(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      window.addEventListener('touchend', handleEnd);
+
+      // Animation Loop with Lerp
+      const loop = () => {
+        if (!isDragging) {
+          targetRotation.y += autoRotateSpeed;
+        }
+
+        currentRotation.x += (targetRotation.x - currentRotation.x) * 0.08;
+        currentRotation.y += (targetRotation.y - currentRotation.y) * 0.08;
+        currentScale += (targetScale - currentScale) * 0.08;
+
+        globe.style.transform = `rotateX(${currentRotation.x}deg) rotateY(${currentRotation.y}deg) scale(${currentScale})`;
+        requestAnimationFrame(loop);
+      };
+      requestAnimationFrame(loop);
+    });
+  </script>
+</body>
+</html>
