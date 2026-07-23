@@ -106,7 +106,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <a
-            href="/Sambhram_Doddamane_Resume.pdf"
+            href={`${import.meta.env.BASE_URL}Sambhram_Doddamane_Resume.pdf`}
             download
             className="group relative inline-flex items-center justify-center gap-4 px-8 py-5 bg-cyan-500 text-[#03060f] font-bold uppercase tracking-widest text-sm hover:bg-white transition-all duration-300 rounded"
           >
