@@ -135,7 +135,7 @@ export const CartierHero: React.FC = () => {
           {/* Target Profile Image */}
           <img
             ref={photoRef}
-            src="/profile.jpeg"
+            src={`${import.meta.env.BASE_URL}profile.jpeg`}
             alt="Sambhram Doddamane"
             className="w-full h-full object-cover grayscale-[0.3] group-hover/photo:grayscale-0 transition-all duration-700 brightness-110 contrast-110 rounded border border-cyan-500/20 shadow-[0_0_40px_rgba(0,0,0,0.8)]"
             style={{ willChange: 'transform' }}
