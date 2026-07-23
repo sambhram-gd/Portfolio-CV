@@ -23,11 +23,11 @@ export const BackgroundBrandText: React.FC<Props> = ({ text, opacity = 0.04 }) =
       <style dangerouslySetInnerHTML={{
         __html: `
           .brand-text-sizing {
-            font-size: 20vw;
+            font-size: 10vw;
           }
           @media (max-width: 768px) {
             .brand-text-sizing {
-              font-size: 28vw;
+              font-size: 14vw;
             }
           }
         `

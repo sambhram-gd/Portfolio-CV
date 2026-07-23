@@ -10,7 +10,7 @@ const brands = [
 export const BrandTicker: React.FC = () => {
   const doubled = [...brands, ...brands, ...brands, ...brands]; 
   return (
-    <div className="overflow-hidden py-8 border-y border-white/5 bg-[#0a0c1a] relative z-10 flex w-full">
+    <div className="overflow-hidden py-4 md:py-8 border-y border-white/5 bg-[#0a0c1a] relative z-10 flex w-full">
       <style>
         {`
           @keyframes marquee {
@@ -27,8 +27,8 @@ export const BrandTicker: React.FC = () => {
       </style>
       <div className="flex w-max animate-marquee whitespace-nowrap cursor-pointer">
         {doubled.map((b, i) => (
-          <span key={i} className="px-10 text-white/40 hover:text-white transition-colors duration-300 font-bold tracking-widest uppercase text-2xl font-mono flex items-center">
-            {b} <span className="mx-10 text-emerald-500/50 text-3xl">✦</span>
+          <span key={i} className="px-6 md:px-10 text-white/40 hover:text-white transition-colors duration-300 font-bold tracking-widest uppercase text-sm md:text-2xl font-mono flex items-center">
+            {b} <span className="mx-6 md:mx-10 text-emerald-500/50 text-base md:text-3xl">✦</span>
           </span>
         ))}
       </div>

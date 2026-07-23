@@ -220,8 +220,8 @@ export const MenuPixelText: React.FC<Props> = ({
 
   return (
     <div ref={containerRef} className={`relative flex items-center justify-center ${className}`}>
-      <span className="opacity-0 pointer-events-none select-none">{text}</span>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+      <span className="md:opacity-0 md:pointer-events-none md:select-none select-text opacity-100">{text}</span>
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full md:block hidden" />
     </div>
   );
 };
