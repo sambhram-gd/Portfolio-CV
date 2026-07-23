@@ -8,14 +8,24 @@ export const NeuralPreloader: React.FC<NeuralPreloaderProps> = ({ onComplete }) 
   const [pct, setPct] = useState(0);
   const [exiting, setExiting] = useState(false);
   
-  const pathRef = useRef<SVGPathElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const phaseRef = useRef(0);
   const exitFired = useRef(false);
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // High DPI scaling (2x resolution)
+    canvas.width = 800 * 2;
+    canvas.height = 200 * 2;
+    ctx.scale(2, 2);
+
     let start: number | null = null;
     let rafId: number;
-    const DURATION = 4200; // Slow, satisfying 4.2s load sequence
+    const DURATION = 4200; // Slow, satisfying 4.2s sequence
 
     const animate = (ts: number) => {
       if (!start) start = ts;
@@ -23,21 +33,48 @@ export const NeuralPreloader: React.FC<NeuralPreloaderProps> = ({ onComplete }) 
       const progress = Math.min(elapsed / DURATION, 1);
       
       setPct(progress);
-      phaseRef.current += 0.035; // Calmer, slower wave ripple speed
+      phaseRef.current += 0.035; // Calmer wave ripple speed
 
-      if (pathRef.current) {
-        const waterY = 200 - progress * 200; // 200 is bounding box height
-        const amplitude = progress >= 0.98 ? 0 : 11 * (1 - progress); // Dampen wave to flat at 100%
-        const frequency = 0.015;
-        
-        let d = `M 0 200 L 0 ${waterY}`;
-        for (let x = 0; x <= 800; x += 10) {
-          const y = waterY + Math.sin(x * frequency + phaseRef.current) * amplitude;
-          d += ` L ${x} ${y}`;
+      const waterY = 200 - progress * 200;
+      const amplitude = progress >= 0.98 ? 0 : 11 * (1 - progress);
+      const frequency = 0.015;
+
+      // 1. Clear Canvas
+      ctx.clearRect(0, 0, 800, 200);
+
+      // Configure text properties (high compatibility across browsers)
+      ctx.font = '900 110px "Bebas Neue", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if ('letterSpacing' in ctx || (ctx as any).letterSpacing !== undefined) {
+        try {
+          (ctx as any).letterSpacing = '12px';
+        } catch (e) {
+          // Fallback for older browsers
         }
-        d += ` L 800 200 Z`;
-        pathRef.current.setAttribute('d', d);
       }
+
+      // 2. Draw low-opacity background text
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.fillText("SAMBHRAM", 400, 100);
+
+      // 3. Draw rising wave path & clip
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, 200);
+      ctx.lineTo(0, waterY);
+      for (let x = 0; x <= 800; x += 10) {
+        const y = waterY + Math.sin(x * frequency + phaseRef.current) * amplitude;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(800, 200);
+      ctx.closePath();
+      ctx.clip();
+
+      // 4. Draw high-opacity white text inside the clipped area
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText("SAMBHRAM", 400, 100);
+      ctx.restore();
 
       if (progress < 1) {
         rafId = requestAnimationFrame(animate);
@@ -53,7 +90,11 @@ export const NeuralPreloader: React.FC<NeuralPreloaderProps> = ({ onComplete }) 
       }
     };
 
-    rafId = requestAnimationFrame(animate);
+    // Ensure fonts are loaded before starting animation to guarantee perfect alignment
+    document.fonts.ready.then(() => {
+      rafId = requestAnimationFrame(animate);
+    });
+
     return () => cancelAnimationFrame(rafId);
   }, [onComplete]);
 
@@ -80,44 +121,12 @@ export const NeuralPreloader: React.FC<NeuralPreloaderProps> = ({ onComplete }) 
       />
 
       <div className="w-[90%] max-w-4xl flex flex-col items-center relative z-10">
-        <svg viewBox="0 0 800 200" className="w-full select-none overflow-visible">
-          <defs>
-            <clipPath id="preloader-wave-clip">
-              <path ref={pathRef} d="M 0 200 L 0 200 L 800 200 L 800 200 Z" />
-            </clipPath>
-          </defs>
-          
-          {/* Bottom Layer: Dark low-opacity outline text */}
-          <text
-            x="50%"
-            y="55%"
-            dominantBaseline="middle"
-            textAnchor="middle"
-            className="font-bebas font-black tracking-[0.12em]"
-            style={{
-              fontSize: '110px',
-              fill: 'rgba(255, 255, 255, 0.07)',
-            }}
-          >
-            SAMBHRAM
-          </text>
-          
-          {/* Top Layer: Solid White Text clipped by water wave */}
-          <text
-            x="50%"
-            y="55%"
-            dominantBaseline="middle"
-            textAnchor="middle"
-            className="font-bebas font-black tracking-[0.12em]"
-            style={{
-              fontSize: '110px',
-              fill: '#ffffff',
-              clipPath: 'url(#preloader-wave-clip)',
-            }}
-          >
-            SAMBHRAM
-          </text>
-        </svg>
+        {/* High performance 2D Canvas rendering wave fill */}
+        <canvas
+          ref={canvasRef}
+          className="w-full max-w-[800px] aspect-[800/200] select-none"
+          style={{ display: 'block' }}
+        />
 
         {/* Loading progress telemetry details */}
         <div className="w-full flex justify-between mt-6 px-4 font-mono text-[10px] tracking-widest text-white/30">
