@@ -15,7 +15,7 @@ export const NeuralPreloader: React.FC<NeuralPreloaderProps> = ({ onComplete }) 
   useEffect(() => {
     let start: number | null = null;
     let rafId: number;
-    const DURATION = 2800; // Smooth 2.8s load sequence
+    const DURATION = 4200; // Slow, satisfying 4.2s load sequence
 
     const animate = (ts: number) => {
       if (!start) start = ts;
@@ -23,11 +23,11 @@ export const NeuralPreloader: React.FC<NeuralPreloaderProps> = ({ onComplete }) 
       const progress = Math.min(elapsed / DURATION, 1);
       
       setPct(progress);
-      phaseRef.current += 0.07; // Control wave ripple speed
+      phaseRef.current += 0.035; // Calmer, slower wave ripple speed
 
       if (pathRef.current) {
         const waterY = 200 - progress * 200; // 200 is bounding box height
-        const amplitude = progress >= 0.98 ? 0 : 8 * (1 - progress); // Dampen wave to flat at 100%
+        const amplitude = progress >= 0.98 ? 0 : 11 * (1 - progress); // Dampen wave to flat at 100%
         const frequency = 0.015;
         
         let d = `M 0 200 L 0 ${waterY}`;
